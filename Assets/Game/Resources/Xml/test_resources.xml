@@ -1,6 +1,7 @@
 <resource_list>
 	<ui_list>
 		<ui name="test_ui" path="UI" src="TestUI"/>
+		<ui name="test_item_ui" path="UI" src="TestItemUI"/>
 	</ui_list>
 	<effect_list/>
 	<object_list/>	

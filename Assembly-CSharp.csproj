@@ -65,6 +65,7 @@
      <Compile Include="Assets\Game\Script\Scene\BaseScene.cs" />
      <Compile Include="Assets\Game\Script\Scene\TestScene.cs" />
      <Compile Include="Assets\Game\Script\UI\BaseUI.cs" />
+     <Compile Include="Assets\Game\Script\UI\TestItemUI.cs" />
      <Compile Include="Assets\Game\Script\UI\TestUI.cs" />
      <None Include="Assets\Game\Resources\Xml\test_ui.xml" />
      <None Include="Assets\Game\Resources\Xml\test_resources.xml" />
