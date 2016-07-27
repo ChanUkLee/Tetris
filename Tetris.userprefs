@@ -1,0 +1,23 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Game/Script/GameMain.cs">
+    <Files>
+      <File FileName="Assets/Game/Script/Manager/GameSceneManager.cs" Line="49" Column="4" />
+      <File FileName="Assets/Game/Script/Data/GameEnum.cs" Line="4" Column="8" />
+      <File FileName="Assets/Game/Script/GameMain.cs" Line="16" Column="3" />
+      <File FileName="Assets/Game/Script/UI/TestUI.cs" Line="16" Column="3" />
+      <File FileName="Assets/Game/Script/Manager/GameUIManager.cs" Line="30" Column="50" />
+      <File FileName="Assets/Game/Script/Manager/GameSoundManager.cs" Line="53" Column="3" />
+      <File FileName="Assets/Game/Script/Scene/TestScene.cs" Line="15" Column="34" />
+      <File FileName="Assets/Game/Script/Manager/GameResourceManager.cs" Line="55" Column="101" />
+      <File FileName="Assets/Game/Script/Game/Singleton.cs" Line="34" Column="4" />
+      <File FileName="Assets/Game/Script/Scene/BaseScene.cs" Line="8" Column="44" />
+      <File FileName="Assets/Game/Script/Manager/GameStringManager.cs" Line="17" Column="18" />
+      <File FileName="Assets/Game/Resources/Xml/String/test_string.xml" Line="3" Column="56" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
