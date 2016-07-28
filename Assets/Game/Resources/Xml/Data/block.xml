@@ -1,0 +1,45 @@
+<block_list>
+  <block id="1" name="o">
+    <tile x="0" y="0"/>
+    <tile x="0" y="1"/>
+    <tile x="1" y="0"/>
+    <tile x="1" y="1"/>
+  </block>
+  <block id="2" name="i">
+    <tile x="0" y="0"/>
+    <tile x="0" y="1"/>
+    <tile x="0" y="2"/>
+    <tile x="0" y="3"/>
+  </block>
+  <block id="3" name="j">
+    <tile x="0" y="0"/>
+    <tile x="1" y="0"/>
+    <tile x="1" y="1"/>
+    <tile x="1" y="2"/>
+  </block>
+  <block id="4" name="l">
+    <tile x="0" y="0"/>
+    <tile x="0" y="1"/>
+    <tile x="0" y="2"/>
+    <tile x="1" y="0"/>
+  </block>
+  <block id="5" name="s">
+    <tile x="0" y="0"/>
+    <tile x="1" y="0"/>
+    <tile x="1" y="1"/>
+    <tile x="2" y="1"/>
+  </block>
+  <block id="6" name="s">
+    <tile x="0" y="1"/>
+    <tile x="1" y="1"/>
+    <tile x="1" y="0"/>
+    <tile x="2" y="0"/>
+  </block>
+  <block id="7" name="t">
+    <tile x="1" y="0"/>
+    <tile x="1" y="1"/>
+    <tile x="1" y="2"/>
+    <tile x="0" y="2"/>
+    <tile x="2" y="2"/>
+  </block>
+</block_list>

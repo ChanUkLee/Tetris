@@ -5,7 +5,11 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
+using GameFile;
+
 public class GameResourceManager : Singleton<GameResourceManager> {
+
+    private const string PATH = "Xml";
 
 	private struct UINode {
 		public string _group;
@@ -55,247 +59,298 @@ public class GameResourceManager : Singleton<GameResourceManager> {
 	private Dictionary<string, GameObject> _singleUIDictionary = new Dictionary<string, GameObject> ();
 
 	public void Load(string group, string filename) {
-		TextAsset textAsset = Resources.Load ("Xml/" + filename) as TextAsset;
-		if (textAsset != null) {
-			StringBuilder sb = new StringBuilder ();
+        string path = Path.Combine(PATH, filename);
 
-			XmlDocument xmlDocument = new XmlDocument ();
-			xmlDocument.LoadXml (textAsset.text);
+        string output = string.Empty;
+        if (Resource.Read(path, out output) == true)
+        {
+            StringBuilder sb = new StringBuilder();
 
-			try {
-				XmlNode root = xmlDocument.DocumentElement;
-				if (root != null && root.Name.Equals("resource_list") == true) {
-					XmlNode singleNode = root.SelectSingleNode ("ui_list");
-					if (singleNode != null) {
-						XmlNodeList nodeList = singleNode.SelectNodes ("ui");
-						if (nodeList != null) {
-							XmlNode node = null;
-							for (int i = 0; i < nodeList.Count; i++) {
-								node = nodeList[i];
-								if (node != null) {
-									UINode uiNode = new UINode ();
-									uiNode._group = group;
-									uiNode._name = string.Empty;
-									uiNode._filePath = string.Empty;
-									uiNode._fileName = string.Empty;
-									uiNode._prefab = null;
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(output);
 
-									XmlNode nameNode = node.Attributes.GetNamedItem ("name");
-									if (nameNode != null) {
-										uiNode._name = nameNode.Value;
-									}
+            try
+            {
+                XmlNode root = xmlDocument.DocumentElement;
+                if (root != null && root.Name.Equals("resource_list") == true)
+                {
+                    XmlNode singleNode = root.SelectSingleNode("ui_list");
+                    if (singleNode != null)
+                    {
+                        XmlNodeList nodeList = singleNode.SelectNodes("ui");
+                        if (nodeList != null)
+                        {
+                            XmlNode node = null;
+                            for (int i = 0; i < nodeList.Count; i++)
+                            {
+                                node = nodeList[i];
+                                if (node != null)
+                                {
+                                    UINode uiNode = new UINode();
+                                    uiNode._group = group;
+                                    uiNode._name = string.Empty;
+                                    uiNode._filePath = string.Empty;
+                                    uiNode._fileName = string.Empty;
+                                    uiNode._prefab = null;
 
-									XmlNode pathNode = node.Attributes.GetNamedItem ("path");
-									if (pathNode != null) {
-										uiNode._filePath = pathNode.Value;
-									}
+                                    XmlNode nameNode = node.Attributes.GetNamedItem("name");
+                                    if (nameNode != null)
+                                    {
+                                        uiNode._name = nameNode.Value;
+                                    }
 
-									XmlNode srcNode = node.Attributes.GetNamedItem ("src");
-									if (srcNode != null) {
-										uiNode._fileName = srcNode.Value;
-									}
+                                    XmlNode pathNode = node.Attributes.GetNamedItem("path");
+                                    if (pathNode != null)
+                                    {
+                                        uiNode._filePath = pathNode.Value;
+                                    }
 
-									string fullPath = Path.Combine(uiNode._filePath, uiNode._fileName);
-									uiNode._prefab = Resources.Load (fullPath, typeof (GameObject)) as GameObject;
+                                    XmlNode srcNode = node.Attributes.GetNamedItem("src");
+                                    if (srcNode != null)
+                                    {
+                                        uiNode._fileName = srcNode.Value;
+                                    }
 
-									if (uiNode._prefab != null) {
-										if (this._uiNodeDictionary.ContainsKey (uiNode._name) == true) {
-											sb.Remove (0, sb.Length);
-											sb.Append ("key error (");
-											sb.Append (uiNode._name);
-											sb.Append (")");
+                                    string fullPath = Path.Combine(uiNode._filePath, uiNode._fileName);
+                                    uiNode._prefab = Resources.Load(fullPath, typeof(GameObject)) as GameObject;
 
-											GameDebug.Error (sb.ToString ());
-										} else {
-											this._uiNodeDictionary.Add (uiNode._name, uiNode);
-										}	
-									} else {
-										sb.Remove (0, sb.Length);
-										sb.Append ("null error (");
-										sb.Append (fullPath);
-										sb.Append (")");
+                                    if (uiNode._prefab != null)
+                                    {
+                                        if (this._uiNodeDictionary.ContainsKey(uiNode._name) == true)
+                                        {
+                                            sb.Remove(0, sb.Length);
+                                            sb.Append("key error (");
+                                            sb.Append(uiNode._name);
+                                            sb.Append(")");
 
-										GameDebug.Log (sb.ToString ());
-									}
-								}
-							}
-						}
-					}
+                                            GameDebug.Error(sb.ToString());
+                                        }
+                                        else {
+                                            this._uiNodeDictionary.Add(uiNode._name, uiNode);
+                                        }
+                                    }
+                                    else {
+                                        sb.Remove(0, sb.Length);
+                                        sb.Append("null error (");
+                                        sb.Append(fullPath);
+                                        sb.Append(")");
 
-					singleNode = root.SelectSingleNode ("effect_list");
-					if (singleNode != null) {
-						XmlNodeList nodeList = singleNode.SelectNodes ("effect");
-						if (nodeList != null) {
-							XmlNode node = null;
-							for (int i = 0; i < nodeList.Count; i++) {
-								node = nodeList[i];
-								if (node != null) {
-									EffectNode effectNode = new EffectNode ();
-									effectNode._group = group;
-									effectNode._name = string.Empty;
-									effectNode._filePath = string.Empty;
-									effectNode._fileName = string.Empty;
-									effectNode._prefab = null;
+                                        GameDebug.Log(sb.ToString());
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-									XmlNode nameNode = node.Attributes.GetNamedItem ("name");
-									if (nameNode != null) {
-										effectNode._name = nameNode.Value;
-									}
+                    singleNode = root.SelectSingleNode("effect_list");
+                    if (singleNode != null)
+                    {
+                        XmlNodeList nodeList = singleNode.SelectNodes("effect");
+                        if (nodeList != null)
+                        {
+                            XmlNode node = null;
+                            for (int i = 0; i < nodeList.Count; i++)
+                            {
+                                node = nodeList[i];
+                                if (node != null)
+                                {
+                                    EffectNode effectNode = new EffectNode();
+                                    effectNode._group = group;
+                                    effectNode._name = string.Empty;
+                                    effectNode._filePath = string.Empty;
+                                    effectNode._fileName = string.Empty;
+                                    effectNode._prefab = null;
 
-									XmlNode pathNode = node.Attributes.GetNamedItem ("path");
-									if (pathNode != null) {
-										effectNode._filePath = pathNode.Value;
-									}
+                                    XmlNode nameNode = node.Attributes.GetNamedItem("name");
+                                    if (nameNode != null)
+                                    {
+                                        effectNode._name = nameNode.Value;
+                                    }
 
-									XmlNode srcNode = node.Attributes.GetNamedItem ("src");
-									if (srcNode != null) {
-										effectNode._fileName = srcNode.Value;
-									}
+                                    XmlNode pathNode = node.Attributes.GetNamedItem("path");
+                                    if (pathNode != null)
+                                    {
+                                        effectNode._filePath = pathNode.Value;
+                                    }
 
-									string fullPath = Path.Combine (effectNode._filePath, effectNode._fileName);
-									effectNode._prefab = Resources.Load (fullPath, typeof(GameObject)) as GameObject;
-									if (effectNode._prefab != null) {
-										if (this._effectNodeDictionary.ContainsKey (effectNode._name) == true) {
-											sb.Remove (0, sb.Length);
-											sb.Append ("key error (");
-											sb.Append (effectNode._name);
-											sb.Append (")");
+                                    XmlNode srcNode = node.Attributes.GetNamedItem("src");
+                                    if (srcNode != null)
+                                    {
+                                        effectNode._fileName = srcNode.Value;
+                                    }
 
-											GameDebug.Error (sb.ToString ());
-										} else {
-											this._effectNodeDictionary.Add (effectNode._name, effectNode);
-										}
-									} else {
-										sb.Remove (0, sb.Length);
-										sb.Append ("null error (");
-										sb.Append (fullPath);
-										sb.Append (")");
+                                    string fullPath = Path.Combine(effectNode._filePath, effectNode._fileName);
+                                    effectNode._prefab = Resources.Load(fullPath, typeof(GameObject)) as GameObject;
+                                    if (effectNode._prefab != null)
+                                    {
+                                        if (this._effectNodeDictionary.ContainsKey(effectNode._name) == true)
+                                        {
+                                            sb.Remove(0, sb.Length);
+                                            sb.Append("key error (");
+                                            sb.Append(effectNode._name);
+                                            sb.Append(")");
 
-										GameDebug.Error (sb.ToString ());
-									}
-								}
-							}
-						}
-					}
+                                            GameDebug.Error(sb.ToString());
+                                        }
+                                        else {
+                                            this._effectNodeDictionary.Add(effectNode._name, effectNode);
+                                        }
+                                    }
+                                    else {
+                                        sb.Remove(0, sb.Length);
+                                        sb.Append("null error (");
+                                        sb.Append(fullPath);
+                                        sb.Append(")");
 
-					singleNode = root.SelectSingleNode ("object_list");
-					if (singleNode != null) {
-						XmlNodeList nodeList = singleNode.SelectNodes ("object");
-						if (nodeList != null) {
-							XmlNode node = null;
-							for (int i = 0; i < nodeList.Count; i++) {
-								node = nodeList[i];
-								if (node != null) {
-									ObjectNode objectNode = new ObjectNode ();
-									objectNode._group = group;
-									objectNode._name = string.Empty;
-									objectNode._filePath = string.Empty;
-									objectNode._fileName = string.Empty;
-									objectNode._prefab = null;
+                                        GameDebug.Error(sb.ToString());
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-									XmlNode nameNode = node.Attributes.GetNamedItem ("name");
-									if (nameNode != null) {
-										objectNode._name = nameNode.Value;
-									}
+                    singleNode = root.SelectSingleNode("object_list");
+                    if (singleNode != null)
+                    {
+                        XmlNodeList nodeList = singleNode.SelectNodes("object");
+                        if (nodeList != null)
+                        {
+                            XmlNode node = null;
+                            for (int i = 0; i < nodeList.Count; i++)
+                            {
+                                node = nodeList[i];
+                                if (node != null)
+                                {
+                                    ObjectNode objectNode = new ObjectNode();
+                                    objectNode._group = group;
+                                    objectNode._name = string.Empty;
+                                    objectNode._filePath = string.Empty;
+                                    objectNode._fileName = string.Empty;
+                                    objectNode._prefab = null;
 
-									XmlNode pathNode = node.Attributes.GetNamedItem ("path");
-									if (pathNode != null) {
-										objectNode._filePath = pathNode.Value;
-									}
+                                    XmlNode nameNode = node.Attributes.GetNamedItem("name");
+                                    if (nameNode != null)
+                                    {
+                                        objectNode._name = nameNode.Value;
+                                    }
 
-									XmlNode srcNode = node.Attributes.GetNamedItem ("src");
-									if (srcNode != null) {
-										objectNode._fileName = srcNode.Value;
-									}
+                                    XmlNode pathNode = node.Attributes.GetNamedItem("path");
+                                    if (pathNode != null)
+                                    {
+                                        objectNode._filePath = pathNode.Value;
+                                    }
 
-									string fullPath = Path.Combine (objectNode._filePath, objectNode._fileName);
-									objectNode._prefab = Resources.Load (fullPath, typeof(GameObject)) as GameObject;
-									if (objectNode._prefab != null) {
-										if (this._objectNodeDictionary.ContainsKey (objectNode._name) == true) {
-											sb.Remove (0, sb.Length);
-											sb.Append ("key error (");
-											sb.Append (objectNode._name);
-											sb.Append (")");
+                                    XmlNode srcNode = node.Attributes.GetNamedItem("src");
+                                    if (srcNode != null)
+                                    {
+                                        objectNode._fileName = srcNode.Value;
+                                    }
 
-											GameDebug.Error (sb.ToString ());
-										} else {
-											this._objectNodeDictionary.Add (objectNode._name, objectNode);
-										}
-									} else {
-										sb.Remove (0, sb.Length);
-										sb.Append ("null error (");
-										sb.Append (fullPath);
-										sb.Append (")");
+                                    string fullPath = Path.Combine(objectNode._filePath, objectNode._fileName);
+                                    objectNode._prefab = Resources.Load(fullPath, typeof(GameObject)) as GameObject;
+                                    if (objectNode._prefab != null)
+                                    {
+                                        if (this._objectNodeDictionary.ContainsKey(objectNode._name) == true)
+                                        {
+                                            sb.Remove(0, sb.Length);
+                                            sb.Append("key error (");
+                                            sb.Append(objectNode._name);
+                                            sb.Append(")");
 
-										GameDebug.Error (sb.ToString ());
-									}
-								}
-							}
-						}
-					}
+                                            GameDebug.Error(sb.ToString());
+                                        }
+                                        else {
+                                            this._objectNodeDictionary.Add(objectNode._name, objectNode);
+                                        }
+                                    }
+                                    else {
+                                        sb.Remove(0, sb.Length);
+                                        sb.Append("null error (");
+                                        sb.Append(fullPath);
+                                        sb.Append(")");
 
-					singleNode = root.SelectSingleNode ("sound_list");
-					if (singleNode != null) {
-						XmlNodeList nodeList = singleNode.SelectNodes ("sound");
-						if (nodeList != null) {
-							XmlNode node = null;
-							for (int i = 0; i < nodeList.Count; i++) {
-								node = nodeList[i];
-								if (node != null) {
-									SoundNode soundNode = new SoundNode ();
-									soundNode._group = group;
-									soundNode._name = string.Empty;
-									soundNode._filePath = string.Empty;
-									soundNode._fileName = string.Empty;
-									soundNode._clip = null;
+                                        GameDebug.Error(sb.ToString());
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-									XmlNode nameNode = node.Attributes.GetNamedItem ("name");
-									if (nameNode != null) {
-										soundNode._name = nameNode.Value;
-									}
+                    singleNode = root.SelectSingleNode("sound_list");
+                    if (singleNode != null)
+                    {
+                        XmlNodeList nodeList = singleNode.SelectNodes("sound");
+                        if (nodeList != null)
+                        {
+                            XmlNode node = null;
+                            for (int i = 0; i < nodeList.Count; i++)
+                            {
+                                node = nodeList[i];
+                                if (node != null)
+                                {
+                                    SoundNode soundNode = new SoundNode();
+                                    soundNode._group = group;
+                                    soundNode._name = string.Empty;
+                                    soundNode._filePath = string.Empty;
+                                    soundNode._fileName = string.Empty;
+                                    soundNode._clip = null;
 
-									XmlNode pathNode = node.Attributes.GetNamedItem ("path");
-									if (pathNode != null) {
-										soundNode._filePath = pathNode.Value;
-									}
+                                    XmlNode nameNode = node.Attributes.GetNamedItem("name");
+                                    if (nameNode != null)
+                                    {
+                                        soundNode._name = nameNode.Value;
+                                    }
 
-									XmlNode srcNode = node.Attributes.GetNamedItem ("src");
-									if (srcNode != null) {
-										soundNode._fileName = srcNode.Value;
-									}
+                                    XmlNode pathNode = node.Attributes.GetNamedItem("path");
+                                    if (pathNode != null)
+                                    {
+                                        soundNode._filePath = pathNode.Value;
+                                    }
 
-									string fullPath = Path.Combine (soundNode._filePath, soundNode._fileName);
-									soundNode._clip = Resources.Load (fullPath, typeof(AudioClip)) as AudioClip;
-									if (soundNode._clip != null) {
-										if (this._soundNodeDictionary.ContainsKey (soundNode._name) == true) {
-											sb.Remove (0, sb.Length);
-											sb.Append ("key error (");
-											sb.Append (soundNode._name);
-											sb.Append (")");
+                                    XmlNode srcNode = node.Attributes.GetNamedItem("src");
+                                    if (srcNode != null)
+                                    {
+                                        soundNode._fileName = srcNode.Value;
+                                    }
 
-											GameDebug.Error (sb.ToString ());
-										} else {
-											this._soundNodeDictionary.Add (soundNode._name, soundNode);
-										}
-									} else {
-										sb.Remove (0, sb.Length);
-										sb.Append ("null error (");
-										sb.Append (fullPath);
-										sb.Append (")");
+                                    string fullPath = Path.Combine(soundNode._filePath, soundNode._fileName);
+                                    soundNode._clip = Resources.Load(fullPath, typeof(AudioClip)) as AudioClip;
+                                    if (soundNode._clip != null)
+                                    {
+                                        if (this._soundNodeDictionary.ContainsKey(soundNode._name) == true)
+                                        {
+                                            sb.Remove(0, sb.Length);
+                                            sb.Append("key error (");
+                                            sb.Append(soundNode._name);
+                                            sb.Append(")");
 
-										GameDebug.Error (sb.ToString ());
-									}
-								}
-							}
-						}
-					}
-				}
-			} catch (XmlException e) {
-				GameDebug.Error (e.ToString());
-			}
+                                            GameDebug.Error(sb.ToString());
+                                        }
+                                        else {
+                                            this._soundNodeDictionary.Add(soundNode._name, soundNode);
+                                        }
+                                    }
+                                    else {
+                                        sb.Remove(0, sb.Length);
+                                        sb.Append("null error (");
+                                        sb.Append(fullPath);
+                                        sb.Append(")");
 
-			System.GC.Collect ();
-		}
+                                        GameDebug.Error(sb.ToString());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (XmlException e)
+            {
+                GameDebug.Error(e.ToString());
+            }
+
+            System.GC.Collect();
+        }
 	}
 
 	public GameObject CreateUI(string name) {
