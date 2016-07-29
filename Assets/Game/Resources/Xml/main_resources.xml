@@ -1,0 +1,8 @@
+<resource_list>
+	<ui_list>
+		<ui name="main_ui" path="UI" src="MainUI"/>
+	</ui_list>
+	<effect_list/>
+	<object_list/>	
+	<sound_list/>
+</resource_list>

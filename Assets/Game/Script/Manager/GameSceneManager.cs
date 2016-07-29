@@ -29,6 +29,32 @@ public class GameSceneManager : Singleton<GameSceneManager> {
 						}
 						break;
 					}
+				case SCENE_TYPE.LOAD:
+					{
+						LoadScene component = this._scene as LoadScene;
+						if (component != null) {
+							Destroy (component);
+							this._scene = null;
+						} else {
+							GameDebug.Error ("null exception");
+						}
+						break;
+					}
+				case SCENE_TYPE.MAIN:
+					{
+						MainScene component = this._scene as MainScene;
+						if (component != null) {
+							Destroy (component);
+							this._scene = null;
+						} else {
+							GameDebug.Error ("null exception");
+						}
+						break;
+					}
+				default:
+					{
+						break;
+					}
 				}
 			}
 		}
@@ -44,6 +70,26 @@ public class GameSceneManager : Singleton<GameSceneManager> {
 
 				TestScene component = this.gameObject.AddComponent<TestScene> ();
 				this._scene = component as BaseScene;
+				break;
+			}
+		case SCENE_TYPE.LOAD:
+			{
+				yield return SceneManager.LoadSceneAsync ("Load");
+
+				LoadScene component = this.gameObject.AddComponent<LoadScene> ();
+				this._scene = component as BaseScene;
+				break;
+			}
+		case SCENE_TYPE.MAIN:
+			{
+				yield return SceneManager.LoadSceneAsync ("Main");
+
+				MainScene component = this.gameObject.AddComponent<MainScene> ();
+				this._scene = component as BaseScene;
+				break;
+			}
+		default:
+			{
 				break;
 			}
 		}

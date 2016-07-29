@@ -3,5 +3,6 @@
 		NULL = 0,
 		TEST,
         LOAD,
+		MAIN,
 	}
 }

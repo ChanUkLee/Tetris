@@ -1,0 +1,8 @@
+<group>
+	<canvas_list>
+		<canvas name="main_canvas" layer_name="UI" render_mode="overlay" sort_order="0"/>
+	</canvas_list>
+	<ui_list>
+		<ui name="main_ui" canvas="main_canvas" depth="0"/>
+	</ui_list>
+</group>

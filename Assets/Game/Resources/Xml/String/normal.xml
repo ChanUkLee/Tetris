@@ -1,0 +1,6 @@
+<string_table>
+	<string id="neon_tetris" kor="네온 테트리스" eng="NEON TETRIS"/>
+	<string id="start" kor="시작" eng="START"/>
+	<string id="rank" kor="랭킹" eng="RANK"/>
+	<string id="option" kor="옵션" eng="OPTION"/>
+</string_table>

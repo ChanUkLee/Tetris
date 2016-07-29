@@ -12,7 +12,7 @@ public class GameMain : MonoBehaviour {
 		InitScreenResolution ();
 		InitEventSystem ();
 
-		GameSceneManager.Instance.ChangeScene (SCENE_TYPE.TEST);
+		GameSceneManager.Instance.ChangeScene (SCENE_TYPE.LOAD);
 	}
 
 	public void InitScreenResolution() {

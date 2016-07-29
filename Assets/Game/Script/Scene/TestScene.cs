@@ -12,7 +12,6 @@ public class TestScene : BaseScene {
 	private void Awake() {
 		GameResourceManager.Instance.Load ("test", "test_resources");
 		GameUIManager.Instance.Load ("test", "test_ui");
-		GameStringManager.Instance.Load ("test_string");
 
 		GameObject instant = GameResourceManager.Instance.GetSingleUI ("test_ui");
 		if (instant != null) {
@@ -28,7 +27,7 @@ public class TestScene : BaseScene {
 	}
 
 	private void OnDestroy() {
-		GameResourceManager.Instance.RemoveGroup ("test");
 		GameUIManager.Instance.RemoveGroup ("test");
+		GameResourceManager.Instance.RemoveGroup ("test");
 	}
 }

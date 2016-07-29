@@ -1,0 +1,8 @@
+<group>
+	<canvas_list>
+		<canvas name="load_canvas" layer_name="UI" render_mode="overlay" sort_order="0"/>
+	</canvas_list>
+	<ui_list>
+		<ui name="progress_ui" canvas="load_canvas" depth="0"/>
+	</ui_list>
+</group>

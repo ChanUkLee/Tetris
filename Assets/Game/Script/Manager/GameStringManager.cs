@@ -12,6 +12,10 @@ public class GameStringManager : Singleton<GameStringManager> {
 
 	private Dictionary<string, string> _stringDic = new Dictionary<string, string> ();
 
+	public void Initialize() {
+		Remove ();
+	}
+
 	public void Remove() {
 		this._stringDic.Clear();
 	}

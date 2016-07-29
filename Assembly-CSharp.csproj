@@ -47,9 +47,11 @@
   <ItemGroup>
      <Compile Include="Assets\Game\Script\Data\GameEnum.cs" />
      <Compile Include="Assets\Game\Script\Data\GameValue.cs" />
+     <Compile Include="Assets\Game\Script\Game\CanvasController.cs" />
      <Compile Include="Assets\Game\Script\Game\GamePool.cs" />
      <Compile Include="Assets\Game\Script\Game\Singleton.cs" />
      <Compile Include="Assets\Game\Script\Game\StaticLib\GameDebug.cs" />
+     <Compile Include="Assets\Game\Script\Game\StaticLib\GameFile.cs" />
      <Compile Include="Assets\Game\Script\Game\StaticLib\GameHelper.File.cs" />
      <Compile Include="Assets\Game\Script\Game\StaticLib\GameHelper.String.cs" />
      <Compile Include="Assets\Game\Script\Game\StaticLib\GameHelper.Unity.cs" />
@@ -63,13 +65,24 @@
      <Compile Include="Assets\Game\Script\Manager\GameUIManager.cs" />
      <Compile Include="Assets\Game\Script\Object\BaseObject.cs" />
      <Compile Include="Assets\Game\Script\Scene\BaseScene.cs" />
+     <Compile Include="Assets\Game\Script\Scene\LoadScene.cs" />
+     <Compile Include="Assets\Game\Script\Scene\MainScene.cs" />
      <Compile Include="Assets\Game\Script\Scene\TestScene.cs" />
      <Compile Include="Assets\Game\Script\UI\BaseUI.cs" />
+     <Compile Include="Assets\Game\Script\UI\MainUI.cs" />
+     <Compile Include="Assets\Game\Script\UI\ProgressUI.cs" />
      <Compile Include="Assets\Game\Script\UI\TestItemUI.cs" />
      <Compile Include="Assets\Game\Script\UI\TestUI.cs" />
+     <Compile Include="Assets\NeonShapes\SelfDestroyScript.cs" />
+     <None Include="Assets\Game\Resources\Xml\load_ui.xml" />
      <None Include="Assets\Game\Resources\Xml\test_ui.xml" />
+     <None Include="Assets\Game\Resources\Xml\load_resources.xml" />
      <None Include="Assets\Game\Resources\Xml\test_resources.xml" />
+     <None Include="Assets\Game\Resources\Xml\main_resources.xml" />
+     <None Include="Assets\Game\Resources\Xml\Data\block.xml" />
      <None Include="Assets\Game\Resources\Xml\String\test_string.xml" />
+     <None Include="Assets\Game\Resources\Xml\main_ui.xml" />
+     <None Include="Assets\Game\Resources\Xml\String\normal.xml" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
