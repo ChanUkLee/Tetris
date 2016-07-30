@@ -10,6 +10,15 @@ public class MainUI : BaseUI {
 	private StartEvent _startEvent = null;
 	private RankEvent _rankEvent = null;
 	private OptionEvent _optionEvent = null;
+
+    public void Initialize(StartEvent startEvent, RankEvent rankEvent, OptionEvent optionEvent)
+    {
+        Initialize();
+
+        this._startEvent = startEvent;
+        this._rankEvent = rankEvent;
+        this._optionEvent = optionEvent;
+    }
 	
 	public override void Initialize ()
 	{
@@ -26,15 +35,24 @@ public class MainUI : BaseUI {
 	}
 
 	private void OnRank() {
-		GameDebug.Log ("Rank");
+        if (this._rankEvent != null)
+        {
+            this._rankEvent();
+        }
 	}
 
 	private void OnStart() {
-		GameDebug.Log ("Start");
+        if (this._startEvent != null)
+        {
+            this._startEvent();
+        }
 	}
 
 	private void OnOption() {
-		GameDebug.Log ("Option");
+        if (this._optionEvent != null)
+        {
+            this._optionEvent();
+        }
 	}
 
 	public override void SetEnable (bool enable)

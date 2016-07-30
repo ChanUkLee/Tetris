@@ -1,0 +1,10 @@
+<resource_list>
+  <ui_list>
+    <ui name="play_bottom_ui" path="UI" src="PlayBottomUI"/>
+  </ui_list>
+	<effect_list/>
+  <object_list>
+    <object name="block" path="Object" src="Block"/>
+  </object_list>
+	<sound_list/>
+</resource_list>

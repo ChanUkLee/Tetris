@@ -382,6 +382,22 @@ public class GameResourceManager : Singleton<GameResourceManager> {
 		return null;
 	}
 
+    public GameObject GetPrefab(string name)
+    {
+        if (this._objectNodeDictionary != null)
+        {
+            if (this._objectNodeDictionary.ContainsKey(name) == true)
+            {
+                if (this._objectNodeDictionary[name]._prefab != null)
+                {
+                    return this._objectNodeDictionary[name]._prefab;
+                }
+            }
+        }
+
+        return null;
+    }
+
 	public GameObject CreateObject(string name) {
 		if (this._objectNodeDictionary != null) {
 			if (this._objectNodeDictionary.ContainsKey (name) == true) {

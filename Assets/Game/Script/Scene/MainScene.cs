@@ -21,11 +21,26 @@ public class MainScene : BaseScene {
 		if (instant != null) {
 			this._mainUI = instant.GetComponent<MainUI> ();
 			if (this._mainUI != null) {
-				this._mainUI.Initialize ();
+				this._mainUI.Initialize (OnStart, OnRank, OnOption);
 				this._mainUI.SetEnable (true);
 			}
 		}
 	}
+
+    private void OnStart()
+    {
+        GameSceneManager.Instance.ChangeScene(SCENE_TYPE.PLAY);
+    }
+
+    private void OnRank()
+    {
+        GameDebug.Log("RANK");
+    }
+
+    private void OnOption()
+    {
+        GameDebug.Log("OPTION");
+    }
 
 	private void OnDestroy()
 	{
