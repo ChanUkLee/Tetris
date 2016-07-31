@@ -1,45 +1,44 @@
 <block_list>
-  <block id="1" name="o">
+  <block id="1" name="o" enable_direction="false">
     <tile x="0" y="0"/>
     <tile x="0" y="1"/>
     <tile x="1" y="0"/>
     <tile x="1" y="1"/>
   </block>
-  <block id="2" name="i">
+  <block id="2" name="i" enable_direction="true">
+    <tile x="0" y="-1"/>
     <tile x="0" y="0"/>
     <tile x="0" y="1"/>
     <tile x="0" y="2"/>
-    <tile x="0" y="3"/>
   </block>
-  <block id="3" name="j">
+  <block id="3" name="j" enable_direction="true">
     <tile x="0" y="0"/>
     <tile x="1" y="0"/>
     <tile x="1" y="1"/>
     <tile x="1" y="2"/>
   </block>
-  <block id="4" name="l">
+  <block id="4" name="l" enable_direction="true">
     <tile x="0" y="0"/>
     <tile x="0" y="1"/>
     <tile x="0" y="2"/>
     <tile x="1" y="0"/>
   </block>
-  <block id="5" name="s">
+  <block id="5" name="s" enable_direction="true">
     <tile x="0" y="0"/>
     <tile x="1" y="0"/>
     <tile x="1" y="1"/>
     <tile x="2" y="1"/>
   </block>
-  <block id="6" name="s">
+  <block id="6" name="s" enable_direction="true">
     <tile x="0" y="1"/>
     <tile x="1" y="1"/>
     <tile x="1" y="0"/>
     <tile x="2" y="0"/>
   </block>
-  <block id="7" name="t">
+  <block id="7" name="t" enable_direction="true">
+    <tile x="-1" y="0"/>
+    <tile x="0" y="0"/>
     <tile x="1" y="0"/>
-    <tile x="1" y="1"/>
-    <tile x="1" y="2"/>
-    <tile x="0" y="2"/>
-    <tile x="2" y="2"/>
+    <tile x="0" y="1"/>
   </block>
 </block_list>

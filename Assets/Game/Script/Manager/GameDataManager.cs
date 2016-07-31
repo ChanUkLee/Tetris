@@ -57,6 +57,12 @@ public class GameDataManager : Singleton<GameDataManager> {
                                     data._name = attribute.Value;
                                 }
 
+                                attribute = node.Attributes.GetNamedItem("enable_direction");
+                                if (attribute != null)
+                                {
+                                    data._enableDirection = System.Convert.ToBoolean(attribute.Value);
+                                }
+
                                 innerNodeList = node.SelectNodes("tile");
                                 if (innerNodeList != null)
                                 {
@@ -65,22 +71,21 @@ public class GameDataManager : Singleton<GameDataManager> {
                                         innerNode = innerNodeList[j];
                                         if (innerNode != null)
                                         {
-                                            Tile tile = new Tile();
-                                            tile.Init();
+                                            Vector3 blockPos = Vector3.zero;
 
                                             attribute = innerNode.Attributes.GetNamedItem("x");
                                             if (attribute != null)
                                             {
-                                                int.TryParse(attribute.Value, out tile._x);
+                                                float.TryParse(attribute.Value, out blockPos.x);
                                             }
 
                                             attribute = innerNode.Attributes.GetNamedItem("y");
                                             if (attribute != null)
                                             {
-                                                int.TryParse(attribute.Value, out tile._y);
+                                                float.TryParse(attribute.Value, out blockPos.y);
                                             }
 
-                                            data._tileList.Add(tile);
+                                            data._blockList.Add(blockPos);
                                         }
                                     }
                                 }

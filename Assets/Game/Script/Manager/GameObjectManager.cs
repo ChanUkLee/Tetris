@@ -2,18 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using GameEnum;
 using GameData;
 using GamePool;
 using GameSystem;
 
-public class GameObjectManager : Singleton<GameObjectManager> {
-
+public class GameObjectManager : Singleton<GameObjectManager>
+{
+    private Map _map = null;
     private Block _block = null;
     private Pool<GameObject> _blockInstantPool = null;
     private Vector2 _blockSize = Vector2.zero;
 
     public void Load()
     {
+        CreateMap();
+
         GameObject prefab = GameResourceManager.Instance.GetPrefab("block");
         if (prefab != null)
         {
@@ -26,7 +30,25 @@ public class GameObjectManager : Singleton<GameObjectManager> {
                 world_size.x *= prefab.transform.lossyScale.x;
                 world_size.y *= prefab.transform.lossyScale.y;
 
-                this._blockSize = world_size;
+                float sizeX = (float)MAX.MAP_WIDTH * world_size.x / 2f;
+                float sizeY = (float)MAX.MAP_HEIGHT * world_size.y / 2f;
+                if (sizeX < sizeY)
+                {
+                    Camera.main.orthographicSize = sizeY;
+                }
+                else
+                {
+                    Camera.main.orthographicSize = sizeX;
+                }
+
+                if (this._map != null)
+                {
+                    this._map.SetSize(world_size);
+                }
+                else
+                {
+                    GameDebug.Error("null exception");
+                }
                 /*
                 //convert to screen space size
                 Vector3 screen_size = 0.5f * world_size / Camera.main.orthographicSize;
@@ -39,9 +61,23 @@ public class GameObjectManager : Singleton<GameObjectManager> {
         }
 
         this._blockInstantPool = new Pool<GameObject>(CreateBlockInstant, MAX.BLOCK);
-
+        
         CreateBlock();
-        SpwanBlock();
+    }
+
+    private void CreateMap()
+    {
+        if (this._map != null)
+        {
+            Destroy(this._map.gameObject);
+            this._map = null;
+        }
+
+        GameObject instant = new GameObject();
+        instant.name = "Map";
+        instant.transform.SetParent(this.transform);
+
+        this._map = instant.AddComponent<Map>();
     }
 
     private void CreateBlock()
@@ -67,7 +103,7 @@ public class GameObjectManager : Singleton<GameObjectManager> {
             List<BlockData> blockList = GameDataManager.Instance.GetBlockList();
             if (blockList.Count > 0)
             {
-                this._block.Initialize(blockList[Random.Range(0, blockList.Count)], Color.red);
+                this._block.Initialize(blockList[Random.Range(0, blockList.Count)], new Color (Random.Range (0, 1f), Random.Range (0, 1f), Random.Range (0, 1f), 1f));
             }
         }
         else
@@ -107,7 +143,6 @@ public class GameObjectManager : Singleton<GameObjectManager> {
         GameDebug.Error("null exception");
         return null;
     }
-
     public void RemoveBlockInstant(GameObject instant)
     {
         if (instant != null)
@@ -115,5 +150,142 @@ public class GameObjectManager : Singleton<GameObjectManager> {
             instant.SetActive(false);
             this._blockInstantPool.ReleaseItem(instant);
         }
+    }
+
+    #region INTERFACE
+    public void Fix()
+    {
+        this._block.Fix();
+    }
+
+    public bool Down()
+    {
+        Vector3 move = new Vector3(this._block.Position.x, this._block.Position.y + 1, 0f);
+
+        if (move.y < MAX.MAP_HEIGHT)
+        {
+            if (this._block.CheckMoveable(move) == true)
+            {
+                this._block.Move(move);
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    public bool Left()
+    {
+        Vector3 move = new Vector3(this._block.Position.x - 1, this._block.Position.y, 0f);
+
+        if (0 <= move.x)
+        {
+            if (this._block.CheckMoveable(move) == true)
+            {
+                this._block.Move(move);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool Right()
+    {
+        Vector3 move = new Vector3(this._block.Position.x + 1, this._block.Position.y, 0f);
+
+        if (move.x < MAX.MAP_WIDTH)
+        {
+            if (this._block.CheckMoveable(move) == true)
+            {
+                this._block.Move(move);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool Turn()
+    {
+        DIRECTION direction = NextDirection(this._block.Direction);
+
+        if (this._block.CheckMoveable(direction) == true)
+        {
+            this._block.Move(direction);
+            return true;
+        }
+
+        return false;
+    }
+
+    private DIRECTION NextDirection(DIRECTION direction)
+    {
+        switch (direction)
+        {
+            case DIRECTION.UP:
+                {
+                    return DIRECTION.RIGHT;
+                }
+            case DIRECTION.DOWN:
+                {
+                    return DIRECTION.LEFT;
+                }
+            case DIRECTION.LEFT:
+                {
+                    return DIRECTION.UP;
+                }
+            case DIRECTION.RIGHT:
+                {
+                    return DIRECTION.DOWN;
+                }
+            default:
+                {
+                    break;
+                }
+        }
+
+        return DIRECTION.UP;
+    }
+    #endregion
+
+    public void ClearBlock()
+    {
+        this._map.ClearBlock();
+    }
+
+    public void SetBlock(Vector3 position, GameObject instant)
+    {
+        this._map.SetBlock(position, instant);
+    }
+
+    public bool CheckInside(Vector3 position)
+    {
+        return this._map.CheckInside(position);
+    }
+
+    public bool CheckMoveable(Vector3 position)
+    {
+        return this._map.CheckMoveable(position);
+    }
+
+    public Vector3 GetWorldPosition(Vector3 position)
+    {
+        if (this._map != null)
+        {
+            return this._map.GetWorldPosition(position);
+        }
+
+        return Vector3.zero;
+    }
+
+    public Vector3 GetStartPosition()
+    {
+        if (this._map != null)
+        {
+            return this._map.GetStartPosition();
+        }
+
+        return Vector3.zero;
     }
 }

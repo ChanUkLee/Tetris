@@ -26,6 +26,11 @@ public class PlayBottomUI : BaseUI {
     public override void Initialize()
     {
         base.Initialize();
+
+        SetButton("LeftButton", OnLeft);
+        SetButton("RightButton", OnRight);
+        SetButton("UpButton", OnUp);
+        SetButton("DownButton", OnDown);
     }
 
     private void OnLeft()

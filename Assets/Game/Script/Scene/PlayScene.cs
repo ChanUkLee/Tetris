@@ -2,6 +2,7 @@
 using System.Collections;
 
 using GameEnum;
+using GameSystem;
 
 public class PlayScene : BaseScene {
 
@@ -14,6 +15,9 @@ public class PlayScene : BaseScene {
 
     private void Awake()
     {
+        Camera.main.orthographic = true;
+        Camera.main.orthographicSize = (float)MAX.MAP_HEIGHT / 2f;
+
         GameResourceManager.Instance.Load("play", "play_resources");
         GameUIManager.Instance.Load("play", "play_ui");
 

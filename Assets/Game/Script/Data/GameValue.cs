@@ -13,46 +13,19 @@ namespace GameSystem {
 }
 
 namespace GameData {
-    public struct Tile
-    {
-        public void Init()
-        {
-            this._x = 0;
-            this._y = 0;
-        }
-
-        public Tile(int x, int y)
-        {
-            this._x = x;
-            this._y = y;
-        }
-
-        public static Tile zero
-        {
-            get
-            {
-                Tile tile = new Tile();
-                tile.Init();
-
-                return tile;
-            }
-        }
-
-        public int _x;
-        public int _y;
-    }
-
 	public struct BlockData
     {
         public void Init()
         {
             this._id = 0;
             this._name = string.Empty;
-            this._tileList = new List<Tile>();
+            this._enableDirection = false;
+            this._blockList = new List<Vector3>();
         }
 
         public int _id;
         public string _name;
-        public List<Tile> _tileList;
+        public bool _enableDirection;
+        public List<Vector3> _blockList;
     }
 }
