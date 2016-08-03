@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
+using GameEnum;
 using GameData;
 using GameFile;
 
@@ -34,6 +35,8 @@ public class GameDataManager : Singleton<GameDataManager> {
                     {
                         XmlNode node = null;
                         XmlNode attribute = null;
+						XmlNodeList directionNodeList = null;
+						XmlNode directionNode = null;
                         XmlNodeList innerNodeList = null;
                         XmlNode innerNode = null;
 
@@ -57,40 +60,55 @@ public class GameDataManager : Singleton<GameDataManager> {
                                     data._name = attribute.Value;
                                 }
 
-                                attribute = node.Attributes.GetNamedItem("enable_direction");
-                                if (attribute != null)
-                                {
-                                    data._enableDirection = System.Convert.ToBoolean(attribute.Value);
-                                }
+								directionNodeList = node.SelectNodes ("direction");
+								if (directionNodeList != null) {
+									for (int j = 0; j < directionNodeList.Count; j++) {
+										directionNode = directionNodeList [j];
+										if (directionNode != null) {
+											DIRECTION direction = DIRECTION.NULL;
 
-                                innerNodeList = node.SelectNodes("tile");
-                                if (innerNodeList != null)
-                                {
-                                    for (int j = 0; j < innerNodeList.Count; j++)
-                                    {
-                                        innerNode = innerNodeList[j];
-                                        if (innerNode != null)
-                                        {
-                                            Vector3 blockPos = Vector3.zero;
+											attribute = directionNode.Attributes.GetNamedItem ("type");
+											if (attribute != null) {
+												direction = GameEnumConvert.ToDirection (attribute.Value);
 
-                                            attribute = innerNode.Attributes.GetNamedItem("x");
-                                            if (attribute != null)
-                                            {
-                                                float.TryParse(attribute.Value, out blockPos.x);
-                                            }
+												if (data._direction.ContainsKey (direction) == false) {
+													data._direction.Add (direction, new List<Vector3> ());
 
-                                            attribute = innerNode.Attributes.GetNamedItem("y");
-                                            if (attribute != null)
-                                            {
-                                                float.TryParse(attribute.Value, out blockPos.y);
-                                            }
+													innerNodeList = directionNode.SelectNodes("tile");
+													if (innerNodeList != null)
+													{
+														for (int k = 0; k < innerNodeList.Count; k++)
+														{
+															innerNode = innerNodeList[k];
+															if (innerNode != null)
+															{
+																Vector3 blockPos = Vector3.zero;
 
-                                            data._blockList.Add(blockPos);
-                                        }
-                                    }
-                                }
+																attribute = innerNode.Attributes.GetNamedItem("x");
+																if (attribute != null)
+																{
+																	float.TryParse(attribute.Value, out blockPos.x);
+																}
 
-                                this._blockList.Add(data);
+																attribute = innerNode.Attributes.GetNamedItem("y");
+																if (attribute != null)
+																{
+																	float.TryParse(attribute.Value, out blockPos.y);
+																}
+
+																data._direction [direction].Add (blockPos);
+															}
+														}
+													}
+												} else {
+													GameDebug.Error ("key exception");
+												}
+											}
+										}
+									}
+								}
+
+								this._blockList.Add(data);
                             }
                         }
                     }

@@ -160,113 +160,161 @@ public class GameObjectManager : Singleton<GameObjectManager>
 
     public bool Down()
     {
-        Vector3 move = new Vector3(this._block.Position.x, this._block.Position.y + 1, 0f);
+		Vector3 position = this._block.Position;
+		DIRECTION direction = this._block.Direction;
 
-        if (move.y < MAX.MAP_HEIGHT)
-        {
-            if (this._block.CheckMoveable(move) == true)
-            {
-                this._block.Move(move);
-                return true;
-            }
-        }
-        
+		position.y += 1f;
+
+		if (CheckMoveable (position, direction) == true) {
+			this._block.Move(position);
+			return true;
+		}
+
         return false;
     }
 
     public bool Left()
     {
-        Vector3 move = new Vector3(this._block.Position.x - 1, this._block.Position.y, 0f);
+		Vector3 position = this._block.Position;
+		DIRECTION direction = this._block.Direction;
 
-        if (0 <= move.x)
-        {
-            if (this._block.CheckMoveable(move) == true)
-            {
-                this._block.Move(move);
-                return true;
-            }
-        }
+		position.x -= 1f;
 
-        return false;
+		if (CheckMoveable (position, direction) == true) {
+			this._block.Move(position);
+			return true;
+		}  
+
+		return false;
     }
 
     public bool Right()
     {
-        Vector3 move = new Vector3(this._block.Position.x + 1, this._block.Position.y, 0f);
+		Vector3 position = this._block.Position;
+		DIRECTION direction = this._block.Direction;
 
-        if (move.x < MAX.MAP_WIDTH)
-        {
-            if (this._block.CheckMoveable(move) == true)
-            {
-                this._block.Move(move);
-                return true;
-            }
-        }
+		position.x += 1f;
 
-        return false;
+		if (CheckMoveable (position, direction) == true) {
+			this._block.Move(position);
+			return true;
+		}  
+
+		return false;
     }
 
     public bool Turn()
     {
-        DIRECTION direction = NextDirection(this._block.Direction);
+		Vector3 position = this._block.Position;
+		DIRECTION direction = this._block.Direction;
 
-        if (this._block.CheckMoveable(direction) == true)
-        {
-            this._block.Move(direction);
-            return true;
-        }
+		direction = NextDirection(direction);
 
-        return false;
-    }
+		if (CheckMoveable (position, direction) == true) {
+			this._block.Move (direction);
+			return true;
+		} else {
+			Vector3 turnPos = Vector3.zero;
+			if (FindTurnPosition (position, direction, out turnPos) == true) {
+				this._block.Move (turnPos, direction);
+				return true;
+			}
+		}
 
-    private DIRECTION NextDirection(DIRECTION direction)
-    {
-        switch (direction)
-        {
-            case DIRECTION.UP:
-                {
-                    return DIRECTION.RIGHT;
-                }
-            case DIRECTION.DOWN:
-                {
-                    return DIRECTION.LEFT;
-                }
-            case DIRECTION.LEFT:
-                {
-                    return DIRECTION.UP;
-                }
-            case DIRECTION.RIGHT:
-                {
-                    return DIRECTION.DOWN;
-                }
-            default:
-                {
-                    break;
-                }
-        }
-
-        return DIRECTION.UP;
+		this._block.Move(position);   
+		return true;
     }
     #endregion
 
+	private DIRECTION NextDirection(DIRECTION direction)
+	{
+		switch (direction)
+		{
+		case DIRECTION.UP:
+			{
+				return DIRECTION.RIGHT;
+			}
+		case DIRECTION.DOWN:
+			{
+				return DIRECTION.LEFT;
+			}
+		case DIRECTION.LEFT:
+			{
+				return DIRECTION.UP;
+			}
+		case DIRECTION.RIGHT:
+			{
+				return DIRECTION.DOWN;
+			}
+		default:
+			{
+				break;
+			}
+		}
+
+		return DIRECTION.UP;
+	}
+
+	private bool FindTurnPosition(Vector3 position, DIRECTION direction, out Vector3 turnPos) {
+		turnPos = position;
+		List<Vector3> blockList = this._block.GetBlockList (position, direction);
+		for (int i = 0; i < blockList.Count; i++) {
+			if (this._map.GetBlockInstant (blockList [i]) != null) {
+				return false;
+			}
+		}
+
+		for (int i = 0; i < blockList.Count; i++) {
+			if (CheckInside (blockList [i]) == false) {
+				if (blockList [i].x < 0) {
+					turnPos.x += Mathf.Abs (blockList [i].x);
+				}
+
+				if (blockList [i].x >= MAX.MAP_WIDTH) {
+					turnPos.x -= (blockList [i].x + 1f) - MAX.MAP_WIDTH;
+				}
+
+				if (blockList [i].y >= MAX.MAP_HEIGHT) {
+					turnPos.y -= (blockList [i].y + 1f) - MAX.MAP_HEIGHT;
+				}
+			}
+		}
+
+		if (CheckMoveable (turnPos, direction) == true) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool CheckMoveable(Vector3 position, DIRECTION direction) {
+		
+		List<Vector3> blockList = this._block.GetBlockList (position, direction);
+		for (int i = 0; i < blockList.Count; i++) {
+			if (CheckInside (blockList [i]) == false) {
+				return false;
+			}
+
+			if (this._map.GetBlockInstant (blockList [i]) != null) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public bool CheckInside(Vector3 position) {
+		return this._map.CheckInside (position);
+	}
+
     public void ClearBlock()
     {
-        this._map.ClearBlock();
+		this._map.ClearLine ();
     }
 
     public void SetBlock(Vector3 position, GameObject instant)
     {
         this._map.SetBlock(position, instant);
-    }
-
-    public bool CheckInside(Vector3 position)
-    {
-        return this._map.CheckInside(position);
-    }
-
-    public bool CheckMoveable(Vector3 position)
-    {
-        return this._map.CheckMoveable(position);
     }
 
     public Vector3 GetWorldPosition(Vector3 position)

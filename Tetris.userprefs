@@ -1,17 +1,12 @@
-﻿<Properties StartupItem="Tetris.CSharp.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Game/Script/Scene/LoadScene.cs">
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Game/Resources/Xml/Data/block.xml">
     <Files>
-      <File FileName="Assets/Game/Script/Scene/MainScene.cs" Line="1" Column="1" />
-      <File FileName="Assets/Game/Script/Scene/LoadScene.cs" Line="68" Column="47" />
-      <File FileName="Assets/Game/Script/UI/ProgressUI.cs" Line="1" Column="1" />
-      <File FileName="Assets/Game/Script/Scene/TestScene.cs" Line="1" Column="1" />
-      <File FileName="Assets/Game/Script/Manager/GameStringManager.cs" Line="1" Column="1" />
-      <File FileName="Assets/Game/Script/Manager/GameSceneManager.cs" Line="1" Column="1" />
-      <File FileName="Assets/Game/Script/UI/MainUI.cs" Line="1" Column="1" />
-      <File FileName="Assets/Game/Script/Data/GameEnum.cs" Line="1" Column="1" />
-      <File FileName="Assets/Game/Resources/Xml/main_resources.xml" Line="1" Column="1" />
-      <File FileName="Assets/Game/Resources/Xml/main_ui.xml" Line="1" Column="1" />
+      <File FileName="Assets/Game/Script/Manager/GameObjectManager.cs" Line="1" Column="1" />
+      <File FileName="Assets/Game/Script/Object/Map.cs" Line="1" Column="1" />
+      <File FileName="Assets/Game/Script/Object/Block.cs" Line="205" Column="1" />
+      <File FileName="Assets/Game/Resources/Xml/Data/block.xml" Line="138" Column="16" />
+      <File FileName="Assets/Game/Script/Manager/GamePlayManager.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

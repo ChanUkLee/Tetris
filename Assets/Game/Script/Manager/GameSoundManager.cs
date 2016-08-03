@@ -40,7 +40,7 @@ public class GameSoundManager : Singleton<GameSoundManager> {
 		}
 	}
 
-	private void Initialize () {
+	private void Awake () {
 		this._bgmSource = this.gameObject.AddComponent<AudioSource> ();
 
 		this._effectSource = new AudioSource[this._maxEffectCount];

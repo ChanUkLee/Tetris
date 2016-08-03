@@ -30,6 +30,8 @@ public class PlayScene : BaseScene {
         }
 
         GamePlayManager.Instance.Load();
+
+		GameSoundManager.Instance.PlayBGM ("bgm_01", true);
     }
 
     private void OnLeft()

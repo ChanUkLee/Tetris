@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using GameEnum;
+
 namespace GameSystem {
     public class MAX
     {
@@ -19,13 +21,19 @@ namespace GameData {
         {
             this._id = 0;
             this._name = string.Empty;
-            this._enableDirection = false;
-            this._blockList = new List<Vector3>();
+			this._direction = new Dictionary<DIRECTION, List<Vector3>> ();
         }
+
+		public List<Vector3> GetPos(DIRECTION direction) {
+			if (this._direction.ContainsKey (direction) == true) {
+				return this._direction [direction];
+			}
+
+			return new List<Vector3> ();
+		}
 
         public int _id;
         public string _name;
-        public bool _enableDirection;
-        public List<Vector3> _blockList;
+		public Dictionary<DIRECTION, List<Vector3>> _direction;
     }
 }

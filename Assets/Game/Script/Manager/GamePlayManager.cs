@@ -15,6 +15,8 @@ public class GamePlayManager : Singleton<GamePlayManager> {
 
     private void BlockSpawn()
     {
+		GameDebug.Log ("spwan");
+
         if (this._blockDownEvent != null)
         {
             StopCoroutine(this._blockDownEvent);

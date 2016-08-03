@@ -58,7 +58,7 @@ public class Block : BaseObject {
         this._instantList.Clear();
 
         GameObject instant = null;
-        for (int i = 0; i < this._data._blockList.Count; i++)
+		for (int i = 0; i < this._data.GetPos (DIRECTION.UP).Count; i++)
         {
             instant = GameObjectManager.Instance.GetBlockInstant();
             if (instant != null)
@@ -86,116 +86,43 @@ public class Block : BaseObject {
 
     public void Fix()
     {
-        float x = 0f;
-        float y = 0f;
+		Vector3 pos = Vector3.zero;
+		Vector3 position = this._position;
+		DIRECTION direction = this._direction;
+		List<Vector3> blockList = this._data.GetPos (direction);
 
-        for (int i = 0; i < this._data._blockList.Count; i++)
+		for (int i = 0; i < blockList.Count; i++)
         {
             if (i < this._instantList.Count)
             {
                 if (this._instantList[i] != null)
                 {
-                    switch (this._direction)
-                    {
-                        case DIRECTION.UP:
-                            {
-                                x = this._position.x + this._data._blockList[i].x;
-                                y = this._position.y + this._data._blockList[i].y;
-                                break;
-                            }
-                        case DIRECTION.DOWN:
-                            {
-                                x = this._position.x + this._data._blockList[i].x;
-                                y = this._position.y - this._data._blockList[i].y;
-                                break;
-                            }
-                        case DIRECTION.LEFT:
-                            {
-                                x = this._position.x - this._data._blockList[i].y;
-                                y = this._position.y + this._data._blockList[i].x;
-                                break;
-                            }
-                        case DIRECTION.RIGHT:
-                            {
-                                x = this._position.x + this._data._blockList[i].y;
-                                y = this._position.y + this._data._blockList[i].x;
-                                break;
-                            }
-                        default:
-                            {
-                                break;
-                            }
-                    }
+					pos = position + blockList [i];
 
-                    GameObjectManager.Instance.SetBlock(new Vector3(x, y, 0f), this._instantList[i]);
+					this._instantList[i].transform.position = GameObjectManager.Instance.GetWorldPosition(pos);
+					GameObjectManager.Instance.SetBlock(pos, this._instantList[i]);
                 }
             }
         }
     }
 
-    public bool CheckMoveable(Vector3 position)
-    {
-        return CheckMoveable(position, this._direction);
-    }
+	public List<Vector3> GetBlockList(Vector3 position, DIRECTION direction) {
 
-    public bool CheckMoveable(DIRECTION direction)
-    {
-        return CheckMoveable(this._position, direction);
-    }
+		List<Vector3> calcList = new List<Vector3> ();
+		List<Vector3> blockList = this._data.GetPos (direction);
+		for (int i = 0; i < blockList.Count; i++)
+		{
+			if (i < this._instantList.Count)
+			{
+				if (this._instantList[i] != null)
+				{
+					calcList.Add (position + blockList [i]);
+				}
+			}
+		}
 
-    public bool CheckMoveable(Vector3 position, DIRECTION direction)
-    {
-        float x = 0f;
-        float y = 0f;
-
-        for (int i = 0; i < this._data._blockList.Count; i++)
-        {
-            if (i < this._instantList.Count)
-            {
-                if (this._instantList[i] != null)
-                {
-                    switch (direction)
-                    {
-                        case DIRECTION.UP:
-                            {
-                                x = position.x + this._data._blockList[i].x;
-                                y = position.y + this._data._blockList[i].y;
-                                break;
-                            }
-                        case DIRECTION.DOWN:
-                            {
-                                x = position.x + this._data._blockList[i].x;
-                                y = position.y - this._data._blockList[i].y;
-                                break;
-                            }
-                        case DIRECTION.LEFT:
-                            {
-                                x = position.x - this._data._blockList[i].y;
-                                y = position.y + this._data._blockList[i].x;
-                                break;
-                            }
-                        case DIRECTION.RIGHT:
-                            {
-                                x = position.x + this._data._blockList[i].y;
-                                y = position.y + this._data._blockList[i].x;
-                                break;
-                            }
-                        default:
-                            {
-                                break;
-                            }
-                    }
-
-                    if (GameObjectManager.Instance.CheckMoveable(new Vector3(x, y, 0f)) == false)
-                    {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
+		return blockList;
+	}
 
     public void Move(Vector3 position)
     {
@@ -212,60 +139,18 @@ public class Block : BaseObject {
         this._position = position;
         this._direction = direction;
 
-        float x = 0f;
-        float y = 0f;
-
-        for (int i = 0; i < this._data._blockList.Count; i++)
+        Vector3 pos = Vector3.zero;
+		List<Vector3> blockList = this._data.GetPos (direction);
+		for (int i = 0; i < blockList.Count; i++)
         {
             if (i < this._instantList.Count)
             {
                 if (this._instantList[i] != null)
                 {
-                    if (this._data._enableDirection == true)
-                    {
-                        switch (direction)
-                        {
-                            case DIRECTION.UP:
-                                {
-                                    x = position.x + this._data._blockList[i].x;
-                                    y = position.y + this._data._blockList[i].y;
-                                    break;
-                                }
-                            case DIRECTION.DOWN:
-                                {
-                                    x = position.x + this._data._blockList[i].x;
-                                    y = position.y - this._data._blockList[i].y;
-                                    break;
-                                }
-                            case DIRECTION.LEFT:
-                                {
-                                    x = position.x - this._data._blockList[i].y;
-                                    y = position.y + this._data._blockList[i].x;
-                                    break;
-                                }
-                            case DIRECTION.RIGHT:
-                                {
-                                    x = position.x + this._data._blockList[i].y;
-                                    y = position.y + this._data._blockList[i].x;
-                                    break;
-                                }
-                            default:
-                                {
-                                    break;
-                                }
-                        }
-                    }
-                    else
-                    {
-                        x = position.x + this._data._blockList[i].x;
-                        y = position.y + this._data._blockList[i].y;
-                    }
+					pos = position + blockList [i];
+                    this._instantList[i].transform.position = GameObjectManager.Instance.GetWorldPosition(pos);
 
-                    
-
-                    this._instantList[i].transform.position = GameObjectManager.Instance.GetWorldPosition(new Vector3(x, y, 0f));
-
-                    if (GameObjectManager.Instance.CheckInside(new Vector3(x, y, 0f)) == true)
+                    if (GameObjectManager.Instance.CheckInside(pos) == true)
                     {
                         this._instantList[i].SetActive(true);
                     }

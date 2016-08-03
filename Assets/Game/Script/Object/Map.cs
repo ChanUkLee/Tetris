@@ -18,40 +18,34 @@ public class Map : BaseObject {
         }
     }
 
-    public void ClearBlock()
-    {
-        for (int j = 0; j < MAX.MAP_HEIGHT; j++)
-        {
-            if (CheckLineFull(j) == true)
-            {
-                ClearLine(j, true);
-            }
-        }
+	public void ClearLine() {
+		for (int j = MAX.MAP_HEIGHT - 1; j >= 0; j--)
+		{
+			if (CheckLineFill(j) == true)
+			{
+				ClearLine(j);
+			}
+		}
+	}
 
-        for (int j = 0; j < MAX.MAP_HEIGHT - 1; j++)
-        {
-            if (CheckLineEmpty(j + 1) == true)
-            {
-                CopyLine(j, j + 1);
-                ClearLine(j, false);
-            }
-        }
-    }
-
-    private void ClearLine(int index, bool removeInstant)
+    private void ClearLine(int index)
     {
+		bool moveLine = index - 1 >= 0;
+
         for (int i = 0; i < MAX.MAP_WIDTH; i++)
         {
-            if (removeInstant == true)
-            {
-                GameObjectManager.Instance.RemoveBlockInstant(this._instantMap[i, index]);
-            }
-
-            this._instantMap[i, index] = null;
+			GameObjectManager.Instance.RemoveBlockInstant(this._instantMap[i, index]);
+            
+			if (moveLine == true) {
+				this._instantMap [i, index] = this._instantMap [i, index - 1];
+				this._instantMap [i, index - 1] = null;
+			} else {
+				this._instantMap [i, index] = null;
+			}
         }
     }
 
-    private bool CheckLineFull(int index)
+    private bool CheckLineFill(int index)
     {
         for (int i = 0; i < MAX.MAP_WIDTH; i++)
         {
@@ -77,14 +71,6 @@ public class Map : BaseObject {
         return true;
     }
 
-    private void CopyLine(int index, int toIndex)
-    {
-        for (int i = 0; i < MAX.MAP_WIDTH; i++)
-        {
-            this._instantMap[i, toIndex] = this._instantMap[i, index];
-        }
-    }
-
     public void SetBlock(Vector3 position, GameObject instant)
     {
         if (CheckInside(position) == true)
@@ -106,30 +92,13 @@ public class Map : BaseObject {
         return false;
     }
 
-    public bool CheckMoveable(Vector3 position)
-    {
-        if (position.y >= (float)MAX.MAP_HEIGHT)
-        {
-            return false;
-        }
+	public GameObject GetBlockInstant(Vector3 position) {
+		if (CheckInside (position) == true) {
+			return this._instantMap [(int)position.x, (int)position.y];
+		}
 
-        if (position.x < 0)
-        {
-            return false;
-        }
-
-        if ((float)MAX.MAP_WIDTH < position.x)
-        {
-            return false;
-        }
-
-        if (this._instantMap[(int)position.x, (int)position.y] == null)
-        {
-            return true;
-        }
-
-        return false;
-    }
+		return null;
+	}
 
     public Vector3 GetStartPosition()
     {

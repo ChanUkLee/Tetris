@@ -2,9 +2,11 @@
   <ui_list>
     <ui name="play_bottom_ui" path="UI" src="PlayBottomUI"/>
   </ui_list>
-	<effect_list/>
+  <effect_list/>
   <object_list>
     <object name="block" path="Object" src="Block"/>
   </object_list>
-	<sound_list/>
+  <sound_list>
+  	<sound name="bgm_01" path="lmms" src="bgm_01"/>
+  </sound_list>
 </resource_list>
