@@ -31,11 +31,11 @@ public class Block : BaseObject {
     } 
 
     private BlockData _data;
-    private List<GameObject> _instantList = new List<GameObject>();
+	private List<Tile> _tileList = new List<Tile>();
 
-    public List<GameObject> GetInstantList()
+	public List<Tile> GetTileList()
     {
-        return this._instantList;
+		return this._tileList;
     }
 
     public void Initialize(BlockData data, Color color)
@@ -44,8 +44,7 @@ public class Block : BaseObject {
 
         this._data = data;
 
-        CreateBlockInstant();
-        SetColor(color);
+		CreateTile(color);
 
         this._position = GameObjectManager.Instance.GetStartPosition();
         this._direction = DIRECTION.UP;
@@ -53,33 +52,19 @@ public class Block : BaseObject {
         Move(this._position, this._direction);
     }
 
-    private void CreateBlockInstant()
+	private void CreateTile(Color color)
     {
-        this._instantList.Clear();
+		this._tileList.Clear();
 
-        GameObject instant = null;
-		for (int i = 0; i < this._data.GetPos (DIRECTION.UP).Count; i++)
+		Tile tile = null;
+		List<Vector3> tileList = this._data.GetPos (DIRECTION.UP);
+		for (int i = 0; i < tileList.Count; i++)
         {
-            instant = GameObjectManager.Instance.GetBlockInstant();
-            if (instant != null)
+			tile = GameObjectManager.Instance.CreateTile();
+			if (tile != null)
             {
-                this._instantList.Add(instant);
-            }
-        }
-    }
-
-    private void SetColor(Color color)
-    {
-        SpriteRenderer renderer = null;
-        for (int i = 0; i < this._instantList.Count; i++)
-        {
-            if (this._instantList[i] != null)
-            {
-                renderer = this._instantList[i].GetComponent<SpriteRenderer>();
-                if (renderer != null)
-                {
-                    renderer.color = color;
-                }
+				tile.SetColor (color);
+				this._tileList.Add(tile);
             }
         }
     }
@@ -89,39 +74,39 @@ public class Block : BaseObject {
 		Vector3 pos = Vector3.zero;
 		Vector3 position = this._position;
 		DIRECTION direction = this._direction;
-		List<Vector3> blockList = this._data.GetPos (direction);
+		List<Vector3> posList = this._data.GetPos (direction);
 
-		for (int i = 0; i < blockList.Count; i++)
+		for (int i = 0; i < posList.Count; i++)
         {
-            if (i < this._instantList.Count)
+			if (i < this._tileList.Count)
             {
-                if (this._instantList[i] != null)
+				if (this._tileList[i] != null)
                 {
-					pos = position + blockList [i];
+					pos = position + posList [i];
+					this._tileList [i].SetPosition (pos);
 
-					this._instantList[i].transform.position = GameObjectManager.Instance.GetWorldPosition(pos);
-					GameObjectManager.Instance.SetBlock(pos, this._instantList[i]);
+					GameObjectManager.Instance.SetTile (this._tileList[i]);
                 }
             }
         }
     }
 
-	public List<Vector3> GetBlockList(Vector3 position, DIRECTION direction) {
+	public List<Vector3> GetPosList(Vector3 position, DIRECTION direction) {
 
 		List<Vector3> calcList = new List<Vector3> ();
-		List<Vector3> blockList = this._data.GetPos (direction);
-		for (int i = 0; i < blockList.Count; i++)
+		List<Vector3> posList = this._data.GetPos (direction);
+		for (int i = 0; i < posList.Count; i++)
 		{
-			if (i < this._instantList.Count)
+			if (i < this._tileList.Count)
 			{
-				if (this._instantList[i] != null)
+				if (this._tileList[i] != null)
 				{
-					calcList.Add (position + blockList [i]);
+					calcList.Add (position + posList [i]);
 				}
 			}
 		}
 
-		return blockList;
+		return calcList;
 	}
 
     public void Move(Vector3 position)
@@ -143,21 +128,12 @@ public class Block : BaseObject {
 		List<Vector3> blockList = this._data.GetPos (direction);
 		for (int i = 0; i < blockList.Count; i++)
         {
-            if (i < this._instantList.Count)
+			if (i < this._tileList.Count)
             {
-                if (this._instantList[i] != null)
+				if (this._tileList[i] != null)
                 {
 					pos = position + blockList [i];
-                    this._instantList[i].transform.position = GameObjectManager.Instance.GetWorldPosition(pos);
-
-                    if (GameObjectManager.Instance.CheckInside(pos) == true)
-                    {
-                        this._instantList[i].SetActive(true);
-                    }
-                    else
-                    {
-                        this._instantList[i].SetActive(false);
-                    }
+					this._tileList [i].SetPosition (pos);
                 }
             }
         }

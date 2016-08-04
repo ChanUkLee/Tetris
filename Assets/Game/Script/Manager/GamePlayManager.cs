@@ -15,8 +15,6 @@ public class GamePlayManager : Singleton<GamePlayManager> {
 
     private void BlockSpawn()
     {
-		GameDebug.Log ("spwan");
-
         if (this._blockDownEvent != null)
         {
             StopCoroutine(this._blockDownEvent);
@@ -37,7 +35,7 @@ public class GamePlayManager : Singleton<GamePlayManager> {
         }
 
         GameObjectManager.Instance.Fix();
-        GameObjectManager.Instance.ClearBlock();
+		GameObjectManager.Instance.ClearLine();
         BlockSpawn();
 
         this._blockDownEvent = null;
@@ -58,7 +56,7 @@ public class GamePlayManager : Singleton<GamePlayManager> {
         if (GameObjectManager.Instance.Down() == false)
         {
             GameObjectManager.Instance.Fix();
-            GameObjectManager.Instance.ClearBlock();
+			GameObjectManager.Instance.ClearLine();
             BlockSpawn();
         }
     }

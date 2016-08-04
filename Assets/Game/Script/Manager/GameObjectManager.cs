@@ -11,14 +11,14 @@ public class GameObjectManager : Singleton<GameObjectManager>
 {
     private Map _map = null;
     private Block _block = null;
-    private Pool<GameObject> _blockInstantPool = null;
+	private Pool<Tile> _tilePool = null;
     private Vector2 _blockSize = Vector2.zero;
 
     public void Load()
     {
         CreateMap();
 
-        GameObject prefab = GameResourceManager.Instance.GetPrefab("block");
+        GameObject prefab = GameResourceManager.Instance.GetPrefab("tile");
         if (prefab != null)
         {
             SpriteRenderer renderer = prefab.GetComponent<SpriteRenderer>();
@@ -32,35 +32,32 @@ public class GameObjectManager : Singleton<GameObjectManager>
 
                 float sizeX = (float)MAX.MAP_WIDTH * world_size.x / 2f;
                 float sizeY = (float)MAX.MAP_HEIGHT * world_size.y / 2f;
+				float offsetX = 0f;
+				float offsetY = 0f;
                 if (sizeX < sizeY)
                 {
-                    Camera.main.orthographicSize = sizeY;
+                    Camera.main.orthographicSize = sizeY * 1.2f;
+					offsetY = sizeY * 0.2f;
                 }
                 else
                 {
-                    Camera.main.orthographicSize = sizeX;
+					Camera.main.orthographicSize = sizeX * 1.2f;
+					offsetX = sizeX * 0.2f;
                 }
 
                 if (this._map != null)
                 {
+					this._map.SetOffset (new Vector3 (offsetX, offsetY, 0f));
                     this._map.SetSize(world_size);
                 }
                 else
                 {
                     GameDebug.Error("null exception");
                 }
-                /*
-                //convert to screen space size
-                Vector3 screen_size = 0.5f * world_size / Camera.main.orthographicSize;
-                screen_size.y *= Camera.main.aspect;
-
-                //size in pixels
-                Vector3 in_pixels = new Vector3(screen_size.x * Camera.main.pixelWidth, screen_size.y * Camera.main.pixelHeight, 0) * 0.5f;
-                */
             }
         }
 
-        this._blockInstantPool = new Pool<GameObject>(CreateBlockInstant, MAX.BLOCK);
+		this._tilePool = new Pool<Tile>(MakeTile, MAX.MAP_WIDTH * MAX.MAP_HEIGHT + 10);
         
         CreateBlock();
     }
@@ -78,6 +75,7 @@ public class GameObjectManager : Singleton<GameObjectManager>
         instant.transform.SetParent(this.transform);
 
         this._map = instant.AddComponent<Map>();
+		this._map.Initialize ();
     }
 
     private void CreateBlock()
@@ -112,15 +110,22 @@ public class GameObjectManager : Singleton<GameObjectManager>
         }
     }
 
-    private GameObject CreateBlockInstant()
+	private Tile MakeTile()
     {
-        GameObject prefab = GameResourceManager.Instance.GetPrefab("block");
+        GameObject prefab = GameResourceManager.Instance.GetPrefab("tile");
         if (prefab != null)
         {
-            GameObject instant = Instantiate(prefab);
+			GameObject instant = Instantiate(prefab);
             instant.transform.SetParent(this.transform);
             instant.SetActive(false);
-            return instant;
+
+			Tile component = instant.GetComponent<Tile> ();
+			if (component != null) {
+				component.Initialize ();
+				return component;
+			}
+
+			Destroy (instant);
         }
 
         return null;
@@ -131,24 +136,24 @@ public class GameObjectManager : Singleton<GameObjectManager>
         return this._blockSize;
     }
 
-    public GameObject GetBlockInstant()
+	public Tile CreateTile()
     {
-        GameObject instant = this._blockInstantPool.GetItem();
-        if (instant != null)
+		Tile tile = this._tilePool.GetItem();
+		if (tile != null)
         {
-            instant.SetActive(true);
-            return instant;
+			tile.SetEnable(true);
+			return tile;
         }
 
         GameDebug.Error("null exception");
         return null;
     }
-    public void RemoveBlockInstant(GameObject instant)
+	public void ReleaseTile(Tile tile)
     {
-        if (instant != null)
+		if (tile != null)
         {
-            instant.SetActive(false);
-            this._blockInstantPool.ReleaseItem(instant);
+			tile.SetEnable(false);
+			this._tilePool.ReleaseItem(tile);
         }
     }
 
@@ -214,15 +219,45 @@ public class GameObjectManager : Singleton<GameObjectManager>
 			this._block.Move (direction);
 			return true;
 		} else {
-			Vector3 turnPos = Vector3.zero;
-			if (FindTurnPosition (position, direction, out turnPos) == true) {
-				this._block.Move (turnPos, direction);
+			float increaseX = 0f;
+			float decreaseX = 0f;
+			float decreaseY = 0f;
+			List<Vector3> posList = this._block.GetPosList (position, direction);
+			for (int i = 0; i < posList.Count; i++) {
+				if (CheckInside (posList [i]) == false) {
+					if (posList [i].x < 0) {
+						float t = Mathf.Abs (posList [i].x);
+						if (increaseX < t) {
+							increaseX = t;
+						}
+					}
+
+					if (posList [i].x >= MAX.MAP_WIDTH) {
+						float t = posList [i].x - (MAX.MAP_WIDTH - 1f);
+						if (decreaseX < t) {
+							decreaseX = t;
+						}
+					}
+
+					if (posList [i].y >= MAX.MAP_HEIGHT) {
+						float t = posList [i].y - (MAX.MAP_HEIGHT - 1f);
+						if (decreaseY< t) {
+							decreaseY = t;
+						}
+					}
+				}
+			}
+
+			position.x += (increaseX - decreaseX);
+			position.y += (-decreaseY);
+
+			if (CheckMoveable (position, direction) == true) {
+				this._block.Move (position, direction);
 				return true;
 			}
 		}
 
-		this._block.Move(position);   
-		return true;
+		return false;
     }
     #endregion
 
@@ -257,25 +292,25 @@ public class GameObjectManager : Singleton<GameObjectManager>
 
 	private bool FindTurnPosition(Vector3 position, DIRECTION direction, out Vector3 turnPos) {
 		turnPos = position;
-		List<Vector3> blockList = this._block.GetBlockList (position, direction);
-		for (int i = 0; i < blockList.Count; i++) {
-			if (this._map.GetBlockInstant (blockList [i]) != null) {
+		List<Vector3> posList = this._block.GetPosList (position, direction);
+		for (int i = 0; i < posList.Count; i++) {
+			if (this._map.GetTile (posList [i]) != null) {
 				return false;
 			}
 		}
 
-		for (int i = 0; i < blockList.Count; i++) {
-			if (CheckInside (blockList [i]) == false) {
-				if (blockList [i].x < 0) {
-					turnPos.x += Mathf.Abs (blockList [i].x);
+		for (int i = 0; i < posList.Count; i++) {
+			if (CheckInside (posList [i]) == false) {
+				if (posList [i].x < 0) {
+					turnPos.x += Mathf.Abs (posList [i].x);
 				}
 
-				if (blockList [i].x >= MAX.MAP_WIDTH) {
-					turnPos.x -= (blockList [i].x + 1f) - MAX.MAP_WIDTH;
+				if (posList [i].x >= MAX.MAP_WIDTH) {
+					turnPos.x -= (posList [i].x + 1f) - MAX.MAP_WIDTH;
 				}
 
-				if (blockList [i].y >= MAX.MAP_HEIGHT) {
-					turnPos.y -= (blockList [i].y + 1f) - MAX.MAP_HEIGHT;
+				if (posList [i].y >= MAX.MAP_HEIGHT) {
+					turnPos.y -= (posList [i].y + 1f) - MAX.MAP_HEIGHT;
 				}
 			}
 		}
@@ -289,13 +324,13 @@ public class GameObjectManager : Singleton<GameObjectManager>
 
 	private bool CheckMoveable(Vector3 position, DIRECTION direction) {
 		
-		List<Vector3> blockList = this._block.GetBlockList (position, direction);
-		for (int i = 0; i < blockList.Count; i++) {
-			if (CheckInside (blockList [i]) == false) {
+		List<Vector3> posList = this._block.GetPosList (position, direction);
+		for (int i = 0; i < posList.Count; i++) {
+			if (CheckInside (posList [i]) == false) {
 				return false;
 			}
 
-			if (this._map.GetBlockInstant (blockList [i]) != null) {
+			if (this._map.GetTile (posList [i]) != null) {
 				return false;
 			}
 		}
@@ -307,14 +342,14 @@ public class GameObjectManager : Singleton<GameObjectManager>
 		return this._map.CheckInside (position);
 	}
 
-    public void ClearBlock()
+    public void ClearLine()
     {
 		this._map.ClearLine ();
     }
 
-    public void SetBlock(Vector3 position, GameObject instant)
+	public void SetTile(Tile tile)
     {
-        this._map.SetBlock(position, instant);
+		this._map.SetTile(tile);
     }
 
     public Vector3 GetWorldPosition(Vector3 position)

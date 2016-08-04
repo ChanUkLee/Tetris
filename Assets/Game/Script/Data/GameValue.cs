@@ -9,9 +9,7 @@ namespace GameSystem {
     {
         public static int MAP_WIDTH = 10;
         public static int MAP_HEIGHT = 20;
-
-        public static int BLOCK = 205;
-    }
+	}
 }
 
 namespace GameData {

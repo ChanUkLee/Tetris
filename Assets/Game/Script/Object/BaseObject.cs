@@ -10,6 +10,7 @@ public class BaseObject : MonoBehaviour {
 
 	public virtual void SetEnable(bool enable) {
 		this._enable = enable;
+		this.gameObject.SetActive (enable);
 	}
 
 	public bool GetEnable() {

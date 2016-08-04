@@ -4,7 +4,8 @@
   </ui_list>
   <effect_list/>
   <object_list>
-    <object name="block" path="Object" src="Block"/>
+    <object name="tile_bg" path="Object" src="TileBG"/>
+    <object name="tile" path="Object" src="Tile"/>
   </object_list>
   <sound_list>
   	<sound name="bgm_01" path="lmms" src="bgm_01"/>

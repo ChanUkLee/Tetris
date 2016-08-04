@@ -67,6 +67,7 @@
      <Compile Include="Assets\Game\Script\Object\BaseObject.cs" />
      <Compile Include="Assets\Game\Script\Object\Block.cs" />
      <Compile Include="Assets\Game\Script\Object\Map.cs" />
+     <Compile Include="Assets\Game\Script\Object\Tile.cs" />
      <Compile Include="Assets\Game\Script\Scene\BaseScene.cs" />
      <Compile Include="Assets\Game\Script\Scene\LoadScene.cs" />
      <Compile Include="Assets\Game\Script\Scene\MainScene.cs" />
